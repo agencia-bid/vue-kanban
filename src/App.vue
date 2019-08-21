@@ -7,22 +7,24 @@
       </h4>
     </section>
     <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock">
-      <div v-for="stage in statuses" :slot="stage" :key="stage">
-        <h2>
-          {{ stage }}
-          <a>+</a>
-        </h2>
-      </div>
-      <div v-for="item in blocks" :slot="item.id" :key="item.id">
+      <template v-slot:stage="{ stage }">
+          <h2>
+            {{ stage.name }}
+            <a>+</a>
+          </h2>
+      </template>
+
+      <template v-slot:block="{ block }">
         <div>
-          <strong>id:</strong> {{ item.id }}
+          <strong>id:</strong> {{ block.id }}
         </div>
         <div>
-          {{ item.title }}
+          {{ block.title }}
         </div>
-      </div>
-      <div v-for="stage in statuses" :key="stage" :slot="`footer-${stage}`">
-          <a href="" @click.prevent="() => addBlock(stage)">+ Add new block</a>
+      </template>
+
+      <div v-for="stage in statuses" :key="stage.id" :slot="`footer-${stage.name}`">
+          <a href="" @click.prevent="() => addBlock(stage.id)">+ Add new block</a>
       </div>
     </Kanban>
   </div>
@@ -40,7 +42,24 @@ export default {
   },
   data() {
     return {
-      statuses: ['on-hold', 'in-progress', 'needs-review', 'approved'],
+      statuses: [
+        {
+          id: 1,
+          name: 'on-hold',
+        },
+        {
+          id: 2,
+          name: 'in-progress',
+        },
+        {
+          id: 3,
+          name: 'needs-review',
+        },
+        {
+          id: 4,
+          name: 'approved',
+        },
+      ],
       blocks: [],
     };
   },
@@ -48,20 +67,20 @@ export default {
     for (let i = 0; i <= 10; i += 1) {
       this.blocks.push({
         id: i,
-        status: this.statuses[Math.floor(Math.random() * 4)],
+        stage_id: this.statuses[Math.floor(Math.random() * 4)].id,
         title: faker.company.bs(),
       });
     }
   },
 
   methods: {
-    updateBlock: debounce(function (id, status) {
-      this.blocks.find(b => b.id === Number(id)).status = status;
+    updateBlock: debounce(function (id, stageId) {
+      this.blocks.find(b => b.id === Number(id)).stage_id = parseInt(stageId, 10);
     }, 500),
-    addBlock: debounce(function (stage) {
+    addBlock: debounce(function (stageId) {
       this.blocks.push({
         id: this.blocks.length,
-        status: stage,
+        stage_id: stageId,
         title: faker.company.bs(),
       });
     }, 500),

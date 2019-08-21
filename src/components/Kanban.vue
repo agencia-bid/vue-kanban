@@ -1,23 +1,27 @@
 <template>
   <div class="drag-container">
     <ul class="drag-list">
-      <li v-for="stage in stages" class="drag-column" :class="{['drag-column-' + stage]: true}" :key="stage">
+      <li v-for="stage in stages" class="drag-column" :class="{['drag-column-' + stage.name]: true}" :key="stage.id">
+
+        <!-- Stage Slot -->
         <span class="drag-column-header">
-          <slot :name="stage">
-            <h2>{{ stage }}</h2>
+          <slot name="stage" :stage="stage">
+            <h2>{{ stage.name }}</h2>
           </slot>
         </span>
+
         <div class="drag-options"></div>
-        <ul class="drag-inner-list" ref="list" :data-status="stage">
-          <li class="drag-item" v-for="block in getBlocks(stage)" :data-block-id="block.id" :key="block.id">
-            <slot :name="block.id">
-              <strong>{{ block.status }}</strong>
+
+        <ul class="drag-inner-list" ref="list" :data-stage-id="stage.id">
+          <li class="drag-item" v-for="block in getBlocks(stage.id)" :data-block-id="block.id" :key="block.id">
+            <slot name="block" :block="block">
               <div>{{ block.id }}</div>
             </slot>
           </li>
         </ul>
+
         <div class="drag-column-footer">
-            <slot :name="`footer-${stage}`"></slot>
+            <slot :name="'footer-' + stage.id"></slot>
         </div>
       </li>
     </ul>
@@ -47,8 +51,8 @@
     },
 
     methods: {
-      getBlocks(status) {
-        return this.localBlocks.filter(block => block.status === status);
+      getBlocks(id) {
+        return this.localBlocks.filter(block => block.stage_id === id);
       },
     },
 
@@ -62,7 +66,7 @@
           for (index = 0; index < list.children.length; index += 1) {
             if (list.children[index].classList.contains('is-moving')) break;
           }
-          this.$emit('update-block', block.dataset.blockId, list.dataset.status, index);
+          this.$emit('update-block', block.dataset.blockId, list.dataset.stageId);
         })
         .on('dragend', (el) => {
           el.classList.remove('is-moving');
