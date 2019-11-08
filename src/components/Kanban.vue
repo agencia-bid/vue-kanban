@@ -5,7 +5,7 @@
 
         <!-- Stage Slot -->
         <span class="drag-column-header">
-          <slot name="stage" :stage="{ stage, blocks: getBlocks(stage.id) }">
+          <slot name="stage" :header="{ stage, blocks: getBlocks(stage.id) }">
             <h2>{{ stage.name }}</h2>
           </slot>
         </span>
