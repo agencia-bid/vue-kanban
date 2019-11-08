@@ -7,9 +7,10 @@
       </h4>
     </section>
     <Kanban :stages="statuses" :blocks="blocks" @update-block="updateBlock">
-      <template v-slot:stage="{ stage }">
+      <template v-slot:stage="{ header }">
+
           <h2>
-            {{ stage.name }}
+            {{ header.stage.name }}
             <a>+</a>
           </h2>
       </template>
