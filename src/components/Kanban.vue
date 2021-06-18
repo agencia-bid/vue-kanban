@@ -13,8 +13,14 @@
         <div class="drag-options"></div>
 
         <ul class="drag-inner-list" ref="list" :data-stage-id="stage.id">
-          <li class="drag-item" v-for="block in getBlocks(stage.id)" :data-block-id="block.id" :key="block.id">
-            <slot name="block" :block="block">
+          <li class="drag-item" v-for="(block, index) in theBlocks = getBlocks(stage.id)" :data-block-id="block.id" :key="block.id">
+            <slot
+              name="block"
+              :block="block"
+              :index="index"
+              :last-item="theBlocks.length -1 === index"
+              :stage-id="stage.id"
+            >
               <div>{{ block.id }}</div>
             </slot>
           </li>
