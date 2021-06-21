@@ -18,6 +18,7 @@
               name="block"
               :block="block"
               :index="index"
+              :has-intersect="theBlocks.length - intersectAtIndex === index"
               :last-item="theBlocks.length -1 === index"
               :stage-id="stage.id"
             >
@@ -43,6 +44,10 @@
     props: {
       stages: {},
       blocks: {},
+      intersectAtIndex: {
+        type: Number,
+        default: 4,
+      },
     },
     data() {
       return {
